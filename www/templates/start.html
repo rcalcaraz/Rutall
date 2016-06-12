@@ -1,0 +1,34 @@
+<ion-view title="start" hide-nav-bar="true">
+    <ion-content scroll="false" overflow-scroll="true" padding="false">
+        <section class="startWrapper">
+            <header class="verticalCenterParent basicHeader"><h1 class="verticalCenterChild">Inicio</h1></header>
+            <section class="startMenu">
+                <ul class="list">
+                    <li class="item">
+                        <a ng-click="closeSession()">Cerrar Sesión</a>
+                    </li>
+                    <li class="item">
+                        <a ui-sref="newRoute">Nueva Ruta</a>
+                    </li>
+                    <li class="item">
+                        <a ui-sref="myRoutes">Mis Rutas</a>
+                    </li>
+                    <li class="item">
+                        <a ui-sref="myData">Mis Datos</a>
+                    </li>
+                </ul>
+            </section>
+            <section id="startFooter">
+                <div id="startLogo">
+                    <img src="img/startLogo.png" alt="Rutall Logo" />
+                </div>
+                <div id="startUser">
+                    <h2>{{currentUserEmail}}</h2>
+                </div>
+                <div id="startLocation">
+                    <p>Rutall, tu ruta eficiente</p>
+                </div>
+            </section>
+        </section>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,67 @@
+<ion-view title="Detailed Route" hide-nav-bar="true">
+    <ion-content scroll="true" overflow-scroll="false" padding="false">
+        <section id="basicWrapper">
+            <header class="redHeader">
+                <div class="row buttonHeader">
+                    <div class="col col-center col-10 verticalCenterParent"><a class="verticalCenterChild" ui-sref="start"><i class="icon ion-navicon"></i></a></div>
+                    <div class="col col-center col-90 verticalCenterParent"><h1 class="verticalCenterChild">Ruta Detallada</h1></div>
+                </div>
+            </header>
+            <section id="detailedRouteSection">
+                <section id="details">
+                    <div class="row">
+                        <div class="col col-33 verticalCenterParent">
+                            <div class="detailsContent verticalCenterChild">
+                                <div class="titleContent">Distancia estimada</div>
+                                <div class="content">{{totalDistance}}<span class="metric">km</span></div>
+                                <div class="iconContent"><i class="icon ion-arrow-up-b"></i></div>
+                            </div>
+                        </div>
+                        <div class="col col-33 verticalCenterParent">
+                            <div class="detailsContent verticalCenterChild">
+                                <div class="titleContent">Tiempo estimado</div>
+                                <div class="content">{{totalHours}}<span class="metric">h</span>{{totalMinutes}}<span class="metric">min</span></div>
+                                <div class="iconContent"><i class="icon ion-arrow-up-b"></i></div>
+                            </div>
+                        </div>
+                        <div class="col col-33 verticalCenterParent">
+                            <div class="detailsContent verticalCenterChild">
+                                <div class="titleContent">Consumo estimado</div>
+                                <div class="content">{{totalConsumo}}&euro;</div>
+                                <div class="iconContent"><i class="icon ion-arrow-up-b"></i></div>
+                            </div>
+                        </div>
+                    </div>     
+                    <section id="detailedRouteSeparator" class="verticalCenterParent">
+                        <p class="verticalCenterChild">Orden de visitas más eficiente</p>
+                    </section>       
+                    <section id="listMenu">
+                        <ul class="list">
+                            <li class="item" ng-repeat="localizacion in localizaciones">
+                                <a ui-sref="detailedRoute">
+                                    <div class="localizacion">
+                                        <p>{{localizacion}}</p>
+                                        <span class="listMenuSmallSize">Comentario sobre la visita</span>
+                                    </div>
+                                    <div class="orden">
+                                      <span class="textRight">{{$index+1}}º</span>
+                                    </div>        
+                                </a>
+                            </li>
+                        </ul>
+                        <div id="guardarRuta">
+                           <form ng-submit="saveRoute(data)">
+                             <ng-form class="list list-inset" novalidate>
+                                   <label class="item item-input">
+                                       <input type="text" ng-model="data.name" placeholder="Nombre para la ruta">
+                                   </label>
+                                   <button type="submit" class="button buttonRutall">Guardar Ruta</button>
+                               </ng-form>
+                           </form>      
+                        </div>
+                    </section>        
+                </section>
+            </section>           
+        </section>
+    </ion-content>
+</ion-view>

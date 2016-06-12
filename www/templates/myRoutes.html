@@ -1,0 +1,23 @@
+<ion-view title="Mis Rutas" hide-nav-bar="true">
+    <ion-content scroll="true" overflow-scroll="false" padding="false">
+        <section class="myDataWrapper myRoutesWrapper">
+            <header class="redHeader">
+                <div class="row buttonHeader">
+                    <div class="col col-center col-10 verticalCenterParent"><a class="verticalCenterChild" ui-sref="start"><i class="icon ion-navicon"></i></a></div>
+                    <div class="col col-center col-90 verticalCenterParent"><h1 class="verticalCenterChild">Mis Rutas</h1></div>
+                </div>
+            </header>
+            <section id="listMenu">
+                <ul class="list">
+                    <li class="item" ng-repeat="ruta in rutas">
+                        <a ng-click="selectCurrentRoute(ruta._id)">
+                            {{ruta.name}}<span class="buttonRight"><i class="icon ion-trash-b"></i></span>
+                            <br /><span class="listMenuMediumSize">{{ruta.distance}}km</span>
+                            <br /><span class="listMenuSmallSize">{{ruta.locations.length}} visitas, con un tiempo estimado de {{Math.floor(ruta.time/3600)}}h{{Math.round(ruta.time%60)}}min</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </section>
+    </ion-content>
+</ion-view>

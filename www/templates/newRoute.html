@@ -1,0 +1,36 @@
+<ion-view title="start" hide-nav-bar="true">
+    <ion-content scroll="true" overflow-scroll="false" padding="false">
+        <section id="basicWrapper">
+            <header class="redHeader">
+                <div class="row buttonHeader">
+                    <div class="col col-center col-10 verticalCenterParent"><a class="verticalCenterChild" ui-sref="start"><i class="icon ion-navicon"></i></a></div>
+                    <div class="col col-center col-90 verticalCenterParent"><h1 class="verticalCenterChild">Ruta Noroeste</h1></div>
+                </div>
+            </header>
+            <section class="chooseLocationsMainSection">
+                <div id="chosenLocationMessages">
+                    <h2>Busca una localizacion</h2>
+                </div>
+                <button type="submit" class="button buttonRutallWhite" disabled>Buscar en el mapa</button>
+                <section>
+                    <ng-form class="list list-inset">
+                        <label class="item item-input">
+                            <input type="text" ng-model="location.name" ng-change="search(location)" placeholder="Escribe la localizacion">
+                        </label>
+                    </ng-form>
+                </section>
+                <section id="searchResults">
+                </section>
+                <section id="chosenLocations">
+                    <div id="chosenLocationMessages">
+                        <h2>Localizaciones elegidas</h2>
+                    </div>
+                    <ul id="choosenLocations">
+                    </ul>
+                </section>
+                <button type="submit" class="button buttonRutall" ng-click="continue()">Continuar</button>
+            </section>
+
+        </section>
+    </ion-content>
+</ion-view>

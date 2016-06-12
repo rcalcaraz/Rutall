@@ -1,0 +1,28 @@
+<ion-view title="Sign Up" hide-nav-bar="true">
+    <ion-content scroll="false" overflow-scroll="true" padding="false">
+        <section class="startWrapper">
+            <header>
+                <div class="row buttonHeader">
+                    <div class="col col-center col-10 verticalCenterParent"><a class="verticalCenterChild" ui-sref="login"><i class="icon ion-close"></i></a></div>
+                    <div class="col col-center col-90 verticalCenterParent"><h1 class="verticalCenterChild">Registro</h1></div>
+                </div>
+            </header>
+            <section class="basicLogo">
+                <img src="img/loginLogo.png" alt="Rutall logo" />
+            </section>
+            <section class="formSection">
+            <form ng-submit="signup(credentials)">       
+                <ng-form class="list list-inset">
+                    <label class="item item-input">
+                        <input type="email" ng-model="credentials.email" placeholder="Email">
+                    </label>
+                    <label class="item item-input">
+                        <input type="password" ng-model="credentials.password" placeholder="Password">
+                    </label>
+                    <button type="submit" class="button buttonRutall">Registrarse</button>
+                </ng-form>
+            </form>
+            </section>
+        </section>
+    </ion-content>
+</ion-view>
