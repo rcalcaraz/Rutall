@@ -5,6 +5,7 @@ angular.module('app.routes', [])
   $stateProvider  
 
   .state('main', {
+    cache: false,
     url: '/main',
     templateUrl: 'templates/main.html',
     controller: 'mainCtrl'
@@ -31,25 +32,11 @@ angular.module('app.routes', [])
     controller: 'changePasswordCtrl'
   })
 
-  .state('forgottenPassword', {
-    cache: false,
-    url: '/forgottenPassword',
-    templateUrl: 'templates/forgottenPassword.html',
-    controller: 'forgottenPasswordCtrl'
-  })
-
   .state('newRoute', {
     cache: false,
     url: '/newRoute',
     templateUrl: 'templates/newRoute.html',
     controller: 'newRouteCtrl'
-  })
-
-  .state('chooseLocations', {
-    cache: false,
-    url: '/chooseLocations',
-    templateUrl: 'templates/chooseLocations.html',
-    controller: 'chooseLocationsCtrl'
   })
 
   .state('detailedRoute', {
@@ -95,12 +82,14 @@ angular.module('app.routes', [])
   })
 
   .state('errorRoute', {
+    cache: false,
     url: '/errorRoute',
     templateUrl: 'templates/errorRoute.html',
     controller: 'errorRouteCtrl'
   })
 
   .state('myRouteDetail', {
+    cache: false,
     url: '/myRouteDetail',
     templateUrl: 'templates/myRouteDetail.html',
     controller: 'myRouteDetailCtrl'

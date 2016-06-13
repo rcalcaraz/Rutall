@@ -82,37 +82,30 @@
         }
     };
 
-    // Route service ========================
-
     app.factory("RouteService",function($http, $q){
         var service = {};
 
-        service.GetAll = GetAll;
-        service.GetByCreator = GetByCreator;
-        service.GetById = GetById;
-        service.Create = Create;
-        service.Delete = Delete;
+        service.getAll = getAll;
+        service.getByCreator = getByCreator;
+        service.getById = getById;
+        service.create = create;
 
         return service;
 
-        function GetAll() {
+        function getAll() {
             return $http.get('/api/routes').then(handleSuccess, handleError('Error getting all routes'));
         }
 
-        function GetByCreator(idCreator) {
+        function getByCreator(idCreator) {
             return $http.get('/api/routes/creator/' + idCreator).then(handleSuccess, handleError('Error getting routes by creator'));
         }
 
-        function GetById(routeId){
+        function getById(routeId){
             return $http.get('/api/routes/' + routeId).then(handleSuccess, handleError('Error getting routes by creator'));
         }
 
-        function Create(route) {
+        function create(route) {
            return $http.post('/api/routes', route).then(handleSuccess, handleError('Error creating route'));
-        }
-
-        function Delete(id) {
-            return $http.delete('/api/routes/' + id).then(handleSuccess, handleError('Error deleting route'));
         }
 
         // private functions
@@ -128,35 +121,31 @@
         }
     });
 
-    // User service ========================
-
     app.factory("UserService",function($http, $q){
         var service = {};
 
-        service.GetAll = GetAll;
-        service.GetByEmail = GetByEmail;
-        service.Create = Create;
-        service.Update = Update;
-        service.Delete = Delete;
+        service.getAll = getAll;
+        service.getByEmail = getByEmail;
+        service.create = create;
 
         return service;
 
-        function GetAll() {
+        function getAll() {
             return $http.get('/api/users').then(handleSuccess, handleError('Error getting all users'));
         }
 
-        function GetByEmail(email) {
+        function getByEmail(email) {
             return $http.get('/api/users/' + email).then(handleSuccess, handleError('Error getting user by email'));
         }
 
-        function Create(user) {
+        function create(user) {
             var deferred = $q.defer();
 
-            GetByEmail(user.email).then(function (duplicateUser) {
+            getByEmail(user.email).then(function (duplicateUser) {
                     if (duplicateUser !== null) {
                         deferred.resolve({ success: false, message: 'Username "' + user.email + '" is already taken' });
                     } else {
-                        Add(user);
+                        add(user);
                         deferred.resolve({ success: true });
                     }
                 });
@@ -164,17 +153,9 @@
             return deferred.promise;        
         }
 
-        function Update(user) {
-            return $http.put('/api/users/' + user.id, user).then(handleSuccess, handleError('Error updating user'));
-        }
-
-        function Delete(id) {
-            return $http.delete('/api/users/' + id).then(handleSuccess, handleError('Error deleting user'));
-        }
-
         // private functions
 
-        function Add(user) {
+        function add(user) {
             return $http.post('/api/users', user).then(handleSuccess, handleError('Error creating user'));
         }
 
@@ -189,20 +170,18 @@
         }
     });
 
-    // Authentication service =====================
-
     app.factory("AuthenticationService",function($http, $cookieStore, $rootScope, UserService){
         var service = {};
 
-        service.Login = Login;
-        service.SetCredentials = SetCredentials;
-        service.ClearCredentials = ClearCredentials;
+        service.login = login;
+        service.setCredentials = setCredentials;
+        service.clearCredentials = clearCredentials;
 
         return service;
 
-        function Login(email, password, callback) {
+        function login(email, password, callback) {
 
-         UserService.GetByEmail(email).then(function (user) {
+        UserService.getByEmail(email).then(function (user) {
                 if (user !== null && user.password === password) {
                     response = { success: true };
                 } else {
@@ -212,7 +191,7 @@
             });
         }
 
-        function SetCredentials(email, password) {
+        function setCredentials(email, password) {
             var authdata = Base64.encode(email + ':' + password);
 
             $rootScope.globals.currentUser = {
@@ -224,30 +203,28 @@
             $cookieStore.put('globals', $rootScope.globals);
         }
 
-        function ClearCredentials() {
+        function clearCredentials() {
             $rootScope.globals = {};
             $cookieStore.remove('globals');
             $http.defaults.headers.common.Authorization = 'Basic';
         }
     });
 
-    // Calculate Route Service =====================
-
     app.factory("CalculateRouteService",function($http,$rootScope,$q){
         var service = {};
 
-        service.FindBestRoute = FindBestRoute;
+        service.findBestRoute = findBestRoute;
 
-        function FindBestRoute(){
-            ClearCurrentRoute();
+        function findBestRoute(){
+            clearCurrentRoute();
             var bestRoute = $q.defer();
-            FindBestGeneticAlgorithmRoute().then(function(rutaGA){
+            findBestGeneticAlgorithmRoute().then(function(rutaGA){
                 if(rutaGA==false){
                     bestRoute.resolve(false);
                 }
                 else{
                     $rootScope.globals.currentGARoute = rutaGA;
-                    CalculateRouteDistance(rutaGA).then(function(rutaOSRM){
+                    calculateRouteDistance(rutaGA).then(function(rutaOSRM){
                         $rootScope.globals.currentRoute = rutaOSRM;
                         bestRoute.resolve(rutaOSRM);
                     });
@@ -259,26 +236,26 @@
        
         // private functions
 
-        function ClearCurrentRoute() {
+        function clearCurrentRoute() {
             $rootScope.globals.currentRoute = {};
             $rootScope.globals.currentGARoute = {};
-            //$cookieStore.remove('currentRoute');
         }
-        function FindBestGeneticAlgorithmRoute(){
+
+        function findBestGeneticAlgorithmRoute(){
             var bestRoute = $q.defer();
             var locations = $rootScope.globals.routeLocations; 
             var coordinatesString = getCoordinatesString(locations);
             getTimeTable(coordinatesString).done(function(data){
-                // TODO Buscar nodos mas cercanos si la ruta es null
-                if(CheckRoute(data)){
+                // TODO Look for nearest nodes if route is null
+                if(checkRoute(data)){
                     var distanceTable = getJsonTimeTable(locations,data);
                     $.getScript("js/geneticAlgorithm.js",function(){
                         $.getScript("js/configuration.js",function(){
-                            // CONFIGURATION OF THE GA
+                            // Genetic Algorithm's configuration
                             configuration.tabla = distanceTable;
                             configuration.chromosomeSize = setGenes(locations).length;
                             configuration.genes = setGenes(locations);
-                            // RUN THE GA
+                            // Genetic Algorithm's run
                             var ga = new GeneticAlgorithm(configuration);
                             ga.initialize();
                             ga.simulateConditionalTime(1500); 
@@ -293,7 +270,7 @@
             return bestRoute.promise;
         }
 
-        function CheckRoute(data){
+        function checkRoute(data){
             var valida = true;
             for(var i=0;i<data.durations.length;i++){
                 for(var j=0;j<data.durations[i].length;j++){
@@ -306,7 +283,7 @@
             return valida;
         }
 
-        function CalculateRouteDistance(data){
+        function calculateRouteDistance(data){
             var bestRoute = $q.defer();
             var coordinates = getCoordinatesFromLocations(data,$rootScope.globals.routeLocations);           
             var query = getOSRMviaRouteQuery(coordinates);
@@ -401,42 +378,40 @@
         return service;
     });
 
-    // Search Location Service =====================
-
     app.factory("SearchLocationService",function($http, $rootScope,$cookieStore){
         var service = {};
         var searchResults = [];
         var choosenLocations = [];
         var i = 0;
 
-        service.GetLocation = GetLocation;
-        service.ChooseLocation = ChooseLocation;
-        service.RemoveLocation = RemoveLocation; 
-        service.SaveLocations = SaveLocations;
-        service.CleanLocations = CleanLocations;
+        service.getLocation = getLocation;
+        service.chooseLocation = chooseLocation;
+        service.removeLocation = removeLocation; 
+        service.saveLocations = saveLocations;
+        service.cleanLocations = cleanLocations;
 
         return service;
 
-        function CleanLocations(){
+        function cleanLocations(){
             $rootScope.globals.routeLocations = {};
             choosenLocations = [];
         }
 
-        function SaveLocations(){
+        function saveLocations(){
             $rootScope.globals.routeLocations = choosenLocations;
         }
 
-        function RemoveLocation(index,location){
+        function removeLocation(index,location){
            choosenLocations.splice(searchLocationIndex(choosenLocations,location),1);
            deleteLocationLi(index);
         }
 
-        function ChooseLocation(index){
+        function chooseLocation(index){
             choosenLocations.push(searchResults[index]);
             addChoosenLocationLi(createLocationLi(i++,searchResults[index]));
         }
 
-        function GetLocation(name, callback) {
+        function getLocation(name, callback) {
             getNominatimInfo(name).then(function (data){
                 searchResults = [];
                 clearResults();
