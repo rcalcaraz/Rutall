@@ -54,11 +54,12 @@ angular.module('app.controllers', [])
 })
       
 .controller('detailedRouteCtrl', function($scope,$rootScope,$location,RouteService,UserService) {
-	var precioLitroGasolina = 1.08; // TODO change to save in user profile
+	var precioLitroGasolina = 1.08; // TODO change get it from an api
+	var consumoMedio = 6; // TODO change to save in user profile
 	$scope.totalDistance = Math.round($rootScope.globals.currentRoute.route_summary.total_distance/1000);
 	$scope.totalHours = Math.floor($rootScope.globals.currentRoute.route_summary.total_time/3600);
 	$scope.totalMinutes = Math.round($rootScope.globals.currentRoute.route_summary.total_time%60);
-	$scope.totalConsumo = Math.round($scope.totalDistance/100);
+	$scope.totalConsumo = Math.round($scope.totalDistance*precioLitroGasolina*consumoMedio/100);
 	$scope.localizaciones = $rootScope.globals.currentGARoute.chromosome;
 
 	$scope.saveRoute = function(data){
