@@ -11,7 +11,7 @@
                 <ul class="list">
                     <li class="item" ng-repeat="ruta in rutas">
                         <a ng-click="selectCurrentRoute(ruta._id)">
-                            {{ruta.name}}<span class="buttonRight"><i class="icon ion-trash-b"></i></span>
+                            {{ruta.name}}
                             <br /><span class="listMenuMediumSize">{{ruta.distance}}km</span>
                             <br /><span class="listMenuSmallSize">{{ruta.locations.length}} visitas, con un tiempo estimado de {{Math.floor(ruta.time/3600)}}h{{Math.round(ruta.time%60)}}min</span>
                         </a>

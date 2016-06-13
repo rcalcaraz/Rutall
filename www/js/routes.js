@@ -94,5 +94,17 @@ angular.module('app.routes', [])
     controller: 'myDataCtrl'
   })
 
+  .state('errorRoute', {
+    url: '/errorRoute',
+    templateUrl: 'templates/errorRoute.html',
+    controller: 'errorRouteCtrl'
+  })
+
+  .state('myRouteDetail', {
+    url: '/myRouteDetail',
+    templateUrl: 'templates/myRouteDetail.html',
+    controller: 'myRouteDetailCtrl'
+  })
+
 $urlRouterProvider.otherwise('/main')
 });

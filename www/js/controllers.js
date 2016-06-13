@@ -100,7 +100,7 @@ angular.module('app.controllers', [])
 	$scope.selectCurrentRoute = function(routeId){
 		RouteService.GetById(routeId).then(function(ruta){
 			$rootScope.globals.currentRoute = ruta;
-			$location.path('/detailedRoute');
+			$location.path('/myRouteDetail');
 		});
 	}
 })
@@ -126,7 +126,12 @@ angular.module('app.controllers', [])
       
 .controller('calculatingRouteCtrl', function($scope,$rootScope,$cookieStore,$location,CalculateRouteService) {
 	CalculateRouteService.FindBestRoute().then(function(rutaOSRM){
-		$location.path('/detailedRoute');
+		if(rutaOSRM==false){
+			$location.path('/errorRoute');
+		}
+		else{
+			$location.path('/detailedRoute');
+		}		
 	});
 })
    
@@ -134,3 +139,15 @@ angular.module('app.controllers', [])
 
 })
  
+.controller('errorRouteCtrl', function($scope) {
+
+})
+
+.controller('myRouteDetailCtrl', function($scope,$rootScope) {
+	console.log($rootScope.globals.currentRoute);
+	$scope.totalDistance = Math.round($rootScope.globals.currentRoute.distance);
+	$scope.totalHours = Math.floor($rootScope.globals.currentRoute.time/3600);
+	$scope.totalMinutes = Math.round($rootScope.globals.currentRoute.time%60);
+	$scope.totalConsumo = Math.round($scope.totalDistance/100);
+	$scope.localizaciones = $rootScope.globals.currentRoute.locations;
+})

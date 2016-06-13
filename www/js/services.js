@@ -91,6 +91,7 @@
         service.GetByCreator = GetByCreator;
         service.GetById = GetById;
         service.Create = Create;
+        service.Delete = Delete;
 
         return service;
 
@@ -107,14 +108,14 @@
         }
 
         function Create(route) {
-            Add(route);
+           return $http.post('/api/routes', route).then(handleSuccess, handleError('Error creating route'));
+        }
+
+        function Delete(id) {
+            return $http.delete('/api/routes/' + id).then(handleSuccess, handleError('Error deleting route'));
         }
 
         // private functions
-
-        function Add(route) {
-            return $http.post('/api/routes', route).then(handleSuccess, handleError('Error creating route'));
-        }
 
         function handleSuccess(res) {
             return res.data;
@@ -126,7 +127,6 @@
             };
         }
     });
-
 
     // User service ========================
 
@@ -242,11 +242,17 @@
             ClearCurrentRoute();
             var bestRoute = $q.defer();
             FindBestGeneticAlgorithmRoute().then(function(rutaGA){
-                $rootScope.globals.currentGARoute = rutaGA;
-                CalculateRouteDistance(rutaGA).then(function(rutaOSRM){
-                    $rootScope.globals.currentRoute = rutaOSRM;
-                    bestRoute.resolve(rutaOSRM);
-                })
+                if(rutaGA==false){
+                    bestRoute.resolve(false);
+                }
+                else{
+                    $rootScope.globals.currentGARoute = rutaGA;
+                    CalculateRouteDistance(rutaGA).then(function(rutaOSRM){
+                        $rootScope.globals.currentRoute = rutaOSRM;
+                        bestRoute.resolve(rutaOSRM);
+                    });
+                }
+                
             });
             return bestRoute.promise;
         }
@@ -263,24 +269,41 @@
             var locations = $rootScope.globals.routeLocations; 
             var coordinatesString = getCoordinatesString(locations);
             getTimeTable(coordinatesString).done(function(data){
-                // TODO Buscar nodos mas cercanos 
-                // TODO Checkear rutas null
-                var distanceTable = getJsonTimeTable(locations,data);
-                $.getScript("js/geneticAlgorithm.js",function(){
-                    $.getScript("js/configuration.js",function(){
-                        // CONFIGURATION OF THE GA
-                        configuration.tabla = distanceTable;
-                        configuration.chromosomeSize = setGenes(locations).length;
-                        configuration.genes = setGenes(locations);
-                        // RUN THE GA
-                        var ga = new GeneticAlgorithm(configuration);
-                        ga.initialize();
-                        ga.simulateConditionalTime(1500); 
-                        bestRoute.resolve(ga.getBest());                                                
+                // TODO Buscar nodos mas cercanos si la ruta es null
+                if(CheckRoute(data)){
+                    var distanceTable = getJsonTimeTable(locations,data);
+                    $.getScript("js/geneticAlgorithm.js",function(){
+                        $.getScript("js/configuration.js",function(){
+                            // CONFIGURATION OF THE GA
+                            configuration.tabla = distanceTable;
+                            configuration.chromosomeSize = setGenes(locations).length;
+                            configuration.genes = setGenes(locations);
+                            // RUN THE GA
+                            var ga = new GeneticAlgorithm(configuration);
+                            ga.initialize();
+                            ga.simulateConditionalTime(1500); 
+                            bestRoute.resolve(ga.getBest());                                                
+                        });
                     });
-                });
+                }
+                else{
+                    bestRoute.resolve(false);      
+                }                         
             });
             return bestRoute.promise;
+        }
+
+        function CheckRoute(data){
+            var valida = true;
+            for(var i=0;i<data.durations.length;i++){
+                for(var j=0;j<data.durations[i].length;j++){
+                    if(data.durations[i][j]==null){
+                        valida = false;
+                        return;
+                    }
+                }
+            }
+            return valida;
         }
 
         function CalculateRouteDistance(data){
@@ -377,7 +400,6 @@
 
         return service;
     });
-
 
     // Search Location Service =====================
 
