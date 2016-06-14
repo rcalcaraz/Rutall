@@ -71,7 +71,7 @@ angular.module('app.controllers', [])
 			ruta.distance = $scope.totalDistance;
 			ruta.consumption = $scope.totalConsumo;
 			ruta.locations = $scope.localizaciones;
-			RouteService.Create(ruta);
+			RouteService.create(ruta);
 			$location.path('/start');
 	    });
    	}
@@ -120,11 +120,13 @@ angular.module('app.controllers', [])
 })
 
 .controller('myRouteDetailCtrl', function($scope,$rootScope) {
-	console.log($rootScope.globals.currentRoute);
+	var precioLitroGasolina = 1.08; // TODO change get it from an api
+	var consumoMedio = 6; // TODO change to save in user profile
+	$scope.name = $rootScope.globals.currentRoute.name;
 	$scope.totalDistance = Math.round($rootScope.globals.currentRoute.distance);
 	$scope.totalHours = Math.floor($rootScope.globals.currentRoute.time/3600);
 	$scope.totalMinutes = Math.round($rootScope.globals.currentRoute.time%60);
-	$scope.totalConsumo = Math.round($scope.totalDistance/100);
+	$scope.totalConsumo = Math.round($scope.totalDistance*precioLitroGasolina*consumoMedio/100);
 	$scope.localizaciones = $rootScope.globals.currentRoute.locations;
 })
    

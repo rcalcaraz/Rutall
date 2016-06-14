@@ -272,9 +272,9 @@
 
         function checkRoute(data){
             var valida = true;
-            for(var i=0;i<data.durations.length;i++){
-                for(var j=0;j<data.durations[i].length;j++){
-                    if(data.durations[i][j]==null){
+            for(var i=0;i<data.distance_table.length;i++){
+                for(var j=0;j<data.distance_table[i].length;j++){
+                    if(data.distance_table[i][j]==null){
                         valida = false;
                         return;
                     }
@@ -325,7 +325,7 @@
             var jsonDistances = {"distances" : [] };
 
             for(var i=0; i<locations.length; i++){
-                jsonDistances.distances[locations[i].display_name] = {"distance" : timeTable.durations[index][i]};
+                jsonDistances.distances[locations[i].display_name] = {"distance" : timeTable.distance_table[index][i]};
             }
             return jsonDistances;
         }
@@ -333,14 +333,14 @@
         function getCoordinatesString(locations){
             var coordinatesString = '';
             for(var i = 0; i<locations.length-1; i++){
-                coordinatesString += locations[i].lat + ',' + locations[i].lon + ';';
+                coordinatesString += 'loc=' + locations[i].lat + ',' + locations[i].lon + '&';
             }
-            coordinatesString += locations[locations.length-1].lat + ',' + locations[locations.length-1].lon;
+            coordinatesString += 'loc=' + locations[locations.length-1].lat + ',' + locations[locations.length-1].lon;
             return coordinatesString;
         }
 
         function getTimeTable(coordinatesString){
-            return $.getJSON('http://router.project-osrm.org/table/v1/driving/' + coordinatesString);
+            return $.getJSON('http://router.project-osrm.org/table?' + coordinatesString);
         }
 
         function getDistance(locationA,locationB){
